@@ -1,0 +1,102 @@
+[
+  {
+    "id": 1,
+    "question": "Which planet is closest to the sun?",
+    "answer_1": "Jupiter",
+    "answer_2": "Mercury",
+    "answer_3": "Earth",
+    "answer_4": "Pluto",
+    "correct_answer": 2,
+    "image_url": "https://i.ibb.co/J2QLz5m/2.png"
+  },
+  {
+    "id": 2,
+    "question": "What is the closest galaxy to the Milky Way?",
+    "answer_1": "Backward",
+    "answer_2": "Black Eye",
+    "answer_3": "Andromeda",
+    "answer_4": "Bode's",
+    "correct_answer": 3,
+    "image_url": "https://i.ibb.co/Qbp88Ct/3.png"
+  },
+  {
+    "id": 3,
+    "question": "What force bends light rays travelling though the universe?",
+    "answer_1": "Gravity",
+    "answer_2": "Strong Force",
+    "answer_3": "Weak Force",
+    "answer_4": "Electromagnatic Force",
+    "correct_answer": 1,
+    "image_url": "https://i.ibb.co/hDTrKWH/4.png"
+  },
+  {
+    "id": 4,
+    "question": "Which planet is usually the furthest form the Sun, but sometimes is not?",
+    "answer_1": "Saturn",
+    "answer_2": "Mars",
+    "answer_3": "Jupiter",
+    "answer_4": "Pluto",
+    "correct_answer": 4,
+    "image_url": "https://i.ibb.co/TrK5s45/1.png"
+  },
+  {
+    "id": 5,
+    "question": "Which is the largest planet in the solar system?",
+    "answer_1": "Earth",
+    "answer_2": "Jupiter",
+    "answer_3": "Mars",
+    "answer_4": "Neptune",
+    "correct_answer": 2,
+    "image_url": "https://i.ibb.co/BPxgGfS/5.png"
+  },
+  {
+    "id": 6,
+    "question": "Which planet takes almost 30 Earth years to orbit the sun?",
+    "answer_1": "Jupiter",
+    "answer_2": "Mars",
+    "answer_3": "Saturn",
+    "answer_4": "Mercury",
+    "correct_answer": 3,
+    "image_url": "https://i.ibb.co/k2CHdJv/6.png"
+  },
+  {
+    "id": 7,
+    "question": "What shape is the Milky Way?",
+    "answer_1": "Spiral",
+    "answer_2": "Elliptical",
+    "answer_3": "Peculiar",
+    "answer_4": "Irregular",
+    "correct_answer": 1,
+    "image_url": "https://i.ibb.co/5GrjwTR/7.png"
+  },
+  {
+    "id": 8,
+    "question": "Who was the first living creature in space?",
+    "answer_1": "Human",
+    "answer_2": "Monkey",
+    "answer_3": "Dog",
+    "answer_4": "Cat",
+    "correct_answer": 3,
+    "image_url": "https://i.ibb.co/Wx5DSBY/8-1.png"
+  },
+  {
+    "id": 9,
+    "question": "When was the first image of a black hole taken?",
+    "answer_1": "2020",
+    "answer_2": "1980",
+    "answer_3": "2018",
+    "answer_4": "2019",
+    "correct_answer": 4,
+    "image_url": "https://i.ibb.co/p43Jpy9/9.png"
+  },
+  {
+    "id": 10,
+    "question": "Which planet is the densest?",
+    "answer_1": "Earth",
+    "answer_2": "Venus",
+    "answer_3": "Mars",
+    "answer_4": "Saturn",
+    "correct_answer": 1,
+    "image_url": "https://i.ibb.co/vBtg6QR/10.png"
+  }
+]

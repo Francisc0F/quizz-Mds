@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quiz Page</title>
+    <link rel="shortcut icon" href="https://i.ibb.co/02bjQGL/quiz.png" type="image/x-icon" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/quiz.css" />
+  </head>
+  <body>
+    <audio id="music" src="../audio/music.m4a" preload="auto" loop></audio>
+    <section class="quiz-app">
+      <div class="header">
+        <h2 class="title"><span class="title-text"></span></h2>
+      </div>
+      <div class="question-control">
+        <div class="timer"></div>
+        <div class="image">
+          <img src="" alt="" />
+        </div>
+        <button class="next">Next</button>
+      </div>
+      <div class="answers">
+        <div class="answer"><span class="answer-text" data-index="1"></span></div>
+        <div class="answer"><span class="answer-text" data-index="2"></span></div>
+        <div class="answer"><span class="answer-text" data-index="3"></span></div>
+        <div class="answer"><span class="answer-text" data-index="4"></span></div>
+      </div>
+      <div class="info">
+        <p class="answers-info"><span id="answers-count"></span> / <span id="questions-count"></span></p>
+        <p class="nickname"></p>
+      </div>
+    </section>
+    <script src="../js/quiz.js"></script>
+  </body>
+</html>

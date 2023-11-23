@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quizz App</title>
+    <link rel="stylesheet" href="./css/index.css" />
+    <link rel="shortcut icon" href="https://i.ibb.co/02bjQGL/quiz.png" type="image/x-icon" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700&family=Prompt:wght@200;300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <script src="./js/index.js" defer></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="main-logo">
+        <img src="./logo.svg" width="300" height="300"  alt="Logo" />
+      </div>
+      <div class="main-box">
+        <div class="nickname-form">
+          <input type="text" name="Nickname" placeholder="Nickname" class="nickname-input" id="nickname" />
+          <button class="btn btn-enter" onclick="start()">Enter</button>
+          <button class="btn btn-enter" onclick="scoreboardlink()">Scoreboard</button>
+        </div>
+        <a class="question-container" onclick="openhowtoplay()"> ? </a>
+      </div>
+
+      <div class="howtoplay" id="howtoplay">
+        <div class="x" id="xbutton" onclick="closehowtoplay()">×</div>
+        <h1 class="title">How To Play ?</h1>
+        <ol class="rules">
+          <li class="rules-item">You try answer 10 random questions that test your knowledge.</li>
+          <li class="rules-item">You choose one of four answers that are available to you.</li>
+          <li class="rules-item">Each correct answer gives you a point. In the end, you get your score.</li>
+          <li class="rules-item">All scores are saved within the Scoreboard.</li>
+          <li class="rules-item">Good Luck!</li>
+        </ol>
+      </div>
+    </div>
+  </body>
+</html>
