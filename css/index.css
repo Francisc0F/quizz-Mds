@@ -210,6 +210,54 @@ a {
 }
 
 
+.position-absolute{
+  position: absolute;
+}
+
+
+.position-relative{
+  position: relative;
+}
+
+
+.btn-topic{
+  position: absolute;
+}
+
+.topic-3{
+  cursor: pointer;
+  left: 509px;
+  top: 262px;
+  
+  opacity: 1;
+}
+
+.topic-3:hover{
+  border: 1px solid #ccc;
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Add specific styles for each polygon class */
+.polygon {
+  fill: #3498db; /* Polygon fill color */
+  stroke: #2980b9; /* Polygon border color */
+  stroke-width: 2; /* Border width */
+}
+
+/* Add hover effect */
+.polygon:hover {
+  fill: #2980b9; /* Change fill color on hover */
+}
+
+
+.path-style{
+
+}
+
+.path-style:hover {
+  cursor: pointer;
+  fill: #2980b9 !important; /* Change fill color on hover */
+}
 
 /*Animations*/
 
