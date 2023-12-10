@@ -13,7 +13,7 @@
       href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700&family=Prompt:wght@200;300;400;500;600&display=swap"
       rel="stylesheet"
     />
-    <script src="./js/index.js" defer></script>
+    <script src="./js/index.js" type="module" defer></script>
   </head>
   <body>
     <div class="container">
@@ -21,12 +21,14 @@
         <img src="./logo.svg" width="300" height="300"  alt="Logo" />
       </div>
       <div class="main-box">
-        <div class="nickname-form">
+        <div  id="challenge-container" class="nickname-form" >
           <input type="text" name="Nickname" placeholder="Nickname" class="nickname-input" id="nickname" />
-          <button class="btn btn-enter" onclick="start()">Enter</button>
+          <button class="btn btn-enter" onclick="onClickEnter()">Enter</button>
           <button class="btn btn-enter" onclick="scoreboardlink()">Scoreboard</button>
         </div>
-        <a class="question-container" onclick="openhowtoplay()"> ? </a>
+        <div id="awaiting-text" class="display-none">
+          <p>Awaiting for challenge to start...</p>
+        </div>
       </div>
 
       <div class="howtoplay" id="howtoplay">

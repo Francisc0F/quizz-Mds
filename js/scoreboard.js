@@ -18,7 +18,6 @@ close.addEventListener('click', closeMessage);
 
 if (finalScore !== null) {
   container.style.display = 'none';
-  playmusic();
   animationMain();
   animationMessage();
   if (finalScore >= 5) {
@@ -66,13 +65,6 @@ function closeMessage() {
   showScores();
 }
 
-function playmusic() {
-  if (finalScore >= 5) {
-    cheeringsound.play();
-  } else {
-    failsound.play();
-  }
-}
 
 /* Animations */
 
