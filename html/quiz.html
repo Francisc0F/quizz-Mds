@@ -15,16 +15,11 @@
     <link rel="stylesheet" href="../css/quiz.css" />
   </head>
   <body>
-    <audio id="music" src="../audio/music.m4a" preload="auto" loop></audio>
     <section class="quiz-app">
       <div class="header">
         <h2 class="title"><span class="title-text"></span></h2>
       </div>
       <div class="question-control">
-        <div class="timer"></div>
-        <div class="image">
-          <img src="" alt="" />
-        </div>
         <button class="next">Next</button>
       </div>
       <div class="answers">
@@ -38,6 +33,6 @@
         <p class="nickname"></p>
       </div>
     </section>
-    <script src="../js/quiz.js"></script>
+    <script src="../js/quiz.js" type="module" defer></script>
   </body>
 </html>

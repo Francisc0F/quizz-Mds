@@ -1,93 +1,91 @@
-let users = JSON.parse(localStorage.getItem('users'));
-let finalScore = localStorage.getItem('finalScore');
-let main = document.querySelector('main');
-let container = document.querySelector('.scores');
-let message = document.querySelector('.message');
-let close = document.querySelector('.icon');
-let paragraphs = document.querySelectorAll('.message .content p');
-let messageContent = document.getElementById('messageDiv');
+import {
+    answersCollection, getUser, getChallengeById, getCurrentChallenge, getFromUserAnswersForChallenge
+} from "./index.js";
 
-// Music
-const cheeringsound = document.getElementById('cheering');
-const failsound = document.getElementById('fail');
-
-// Animations
-
-
-close.addEventListener('click', closeMessage);
-
-if (finalScore !== null) {
-  container.style.display = 'none';
-  playmusic();
-  animationMain();
-  animationMessage();
-  if (finalScore >= 5) {
-    paragraphs[0].textContent = `Your score is ${finalScore}/10  👍🏼`;
-    paragraphs[0].style.color = 'green';
-    paragraphs[1].textContent = `Good Job`;
-  } else {
-    paragraphs[0].textContent = `Your score is ${finalScore}/10  👎🏼`;
-    paragraphs[0].style.color = 'red';
-    paragraphs[1].textContent = `Try better`;
-  }
-  message.style.display = 'flex';
-  localStorage.removeItem('finalScore');
-} else {
-  showScores();
+function goStart() {
+    window.location.href = "./../index.html";
 }
 
-function showScores() {
-  animationMain();
-  if (users) {
-    users = users.sort((a, b) => b.score - a.score);
-    users.forEach((e) => {
-      let userDiv = document.createElement('div');
-      container.appendChild(userDiv);
+async function loadTable() {
 
-      let name = document.createElement('span');
-      name.textContent = e.name;
-      userDiv.appendChild(name);
+    const current = getCurrentChallenge();
 
-      let score = document.createElement('span');
-      score.textContent = e.score;
-      userDiv.appendChild(score);
+    const user = getUser();
+
+
+    if (current?.id) {
+        const challenge = (await getChallengeById(current?.id))[0];
+        if (challenge) {
+            console.log('challenge', challenge);
+            console.log('stopped', challenge.stopped);
+            console.log('show_answers', challenge.show_answers);
+        }
+
+        getFromUserAnswersForChallenge(current.id, 300, user).then(answers => {
+            console.log('answers', answers);
+            var correctCount = 0;
+            for (var i = 0; i < answers.length; i++) {
+                var isCorrect = answers[i].selectedText === answers[i].correct_answer;
+                if (isCorrect) {
+                    correctCount++;
+                }
+            }
+            var totalQuestions = answers.length;
+            // Display the count in a text
+            var countText = "Number of correct answers: " + correctCount;
+            var h1Element = document.getElementById("result");
+            h1Element.textContent = countText + " out of " + totalQuestions;
+            document.body.appendChild(h1Element);
+            if (challenge) {
+                displayTable(answers, challenge.show_answers)
+            } else {
+                displayTable(answers)
+            }
+        })
+    } else {
+        alert("You do not have a challenge selected please register");
+        goStart();
+    }
+}
+
+function displayTable(data, show_answers) {
+    // Get the element where you want to append the table
+    var tableContainer = document.getElementById('table-container');
+    tableContainer.innerHTML = '';
+    // Create a table element
+    var table = document.createElement('table');
+
+    // Create a header row
+    var headerRow = table.insertRow();
+    var columnsToShow = show_answers ? ["question", "correct_answer", "Correct or not"] : ['question'];
+    columnsToShow.forEach(function (column) {
+        var th = document.createElement('th');
+        th.appendChild(document.createTextNode(column));
+        headerRow.appendChild(th);
     });
-  } else {
-    let message = document.createElement('p');
-    message.textContent = 'No Players Yet';
-    container.textContent = '';
-    container.appendChild(message);
-  }
-  container.style.display = 'block';
+
+    // Create rows and cells with data
+    for (var i = 0; i < data.length; i++) {
+        var row = table.insertRow();
+        columnsToShow.forEach(function (column) {
+            var cell = row.insertCell();
+            if (column === "Correct or not") {
+                // Compare selectedText with correct_answer
+                var isCorrect = data[i].selectedText === data[i].correct_answer;
+                cell.className = isCorrect ? "correct" : "incorrect";
+                cell.appendChild(document.createTextNode(isCorrect ? "Correct" : "Incorrect"));
+            } else {
+                cell.appendChild(document.createTextNode(data[i][column]));
+            }
+        });
+    }
+
+    // Append the table to the container
+    tableContainer.appendChild(table);
 }
 
-function closeMessage() {
-  message.style.display = 'none';
-  showScores();
-}
+(function () {
 
-function playmusic() {
-  if (finalScore >= 5) {
-    cheeringsound.play();
-  } else {
-    failsound.play();
-  }
-}
+    let inter = setInterval(loadTable , 1000);
 
-/* Animations */
-
-function animationMessage() {
-  messageContent.classList.add("animation");
-
-  setTimeout(() => {
-    messageContent.classList.remove("animation");
-  }, 800);
-}
-
-function animationMain() {
-  main.classList.add("animation2");
-
-  setTimeout(() => {
-    main.classList.remove("animation2");
-  }, 400);
-}
+})()
