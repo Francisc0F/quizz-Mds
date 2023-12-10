@@ -22,21 +22,13 @@
     <title>Scoreboard</title>
   </head>
   <body>
-    <main>
       <section>
         <h1>Scoreboard</h1>
-        <a href="../index.html">PLAY</a>
       </section>
-      <section class="scores"></section>
-      <!-- the score message -->
-      <div class="message" id = "messageDiv">
-        <div class="content">
-          <div class="icon"><i class="fa-solid fa-xmark"></i></div>
-          <p>Your score is 10 &#128077;&#127996;</p>
-          <p class="warning">Good Job</p>
-        </div>
-      </div>
-    </main>
-    <script src="../js/scoreboard.js"></script>
+
+      <table style="display: flex; justify-content: center; align-items: center" id="table-container">
+      </table>
+      <h1 id="result"></h1>
+    <script src="../js/scoreboard.js" type="module" defer></script>
   </body>
 </html>

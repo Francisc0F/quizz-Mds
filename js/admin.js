@@ -1,72 +1,194 @@
 import {
     addDoc
 } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
-import {challengesCollection, questionsCollection, getChallenges, updateChallenge, deleteChallenge} from "./index.js";
+import {
+    challengesCollection,
+    questionsCollection,
+    getChallenges,
+    updateChallenge,
+    deleteChallenge,
+    deleteQuestion,
+    getQuestionsForChallenge,
+    getAnswersForChallenge, getUsersByName, getUsers, deleteUser
+} from "./index.js";
 
 
-window.onload = () => {
+window.onload = async () => {
     setChallengeText();
-
-    let interval = setInterval(updateTable, 2000);
+    updateTable();
+    await createUserTableRows();
+    //let interval = setInterval(updateTable, 2000);
 }
 
 
 let list = [];
+let listUsers = [];
 
 function updateTable() {
-    getChallenges(10).then(challenges => {
+    getChallenges(20).then(async challenges => {
         list = challenges;
-        createTableRows(challenges)
+        console.log('challenges', challenges);
+        await createTableRows(challenges)
     });
 }
 
 
-const createTableRows = (challenges) => {
+const createTableRows = async (challenges) => {
     const tableBody = document.getElementById('challenge-list'); // Replace with your actual table body ID
 
     // Clear existing rows
     tableBody.innerHTML = '';
 
     // Create new rows
-    challenges.forEach((challenge, index) => {
-        const row = document.createElement('tr');
+    for (const challenge of challenges) {
+        const index = challenges.indexOf(challenge);
+        // Create main row for challenge
 
-        // Assuming each challenge has properties like 'name', 'description', etc.
-        // Adjust this part based on your challenge structure
-        row.innerHTML = `
-      <td>${challenge.title}</td>
-      <td>${challenge.timestamp}</td>
-      <td >
-      
-      <div class="d-flex">
-          ${!challenge.stopped ? `<button class="btn btn-stop" onclick="stopChallenge(${index}, this.parentNode.parentNode)">Stop Challenge</button>` : ''}
-              ${!challenge.show_results ? `<button class="btn btn-results" onclick="showResults(${index}, this.parentNode.parentNode)">Show Results</button>` : ''}
-            <button class="btn btn-delete" onclick="onDeleteChallenge(${index})">Delete Challenge</button>
+        // Format timestamp
+        const formattedTimestamp = new Date(challenge.timestamp).toLocaleString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            timeZoneName: 'short'
+        });
+
+
+        const row = document.createElement('tr');
+        const mainContentCell = document.createElement('td');
+        mainContentCell.colSpan = 3; // Span all columns for the main content
+        mainContentCell.innerHTML = `
+            <div>
+                <span class="title">${challenge.title}</span>
+                <span>${formattedTimestamp}</span>
+                <div class="d-flex">
+                    ${!challenge.stopped ? `<button class="btn btn-stop" onclick="stopChallenge(${index}, this.parentNode.parentNode)">Stop Challenge</button>` : ''}
+                    ${!challenge.show_results ? `<button class="btn btn-results" onclick="showResults(${index}, this.parentNode.parentNode)">Show Results</button>` : ''}
+                    <button class="btn btn-delete" onclick="onDeleteChallenge(${index})">Delete Challenge</button>
+                </div>
             </div>
-        <!-- Add more buttons or customize as needed -->
-      </td>
-    `;
+        `;
+        row.appendChild(mainContentCell);
         tableBody.appendChild(row);
-    });
+
+        // Create row for sub-table
+        const subTableRow = document.createElement('tr');
+        const subTableContainer = document.createElement('td');
+        subTableContainer.colSpan = 3; // Span all columns for the sub-table
+        const subTableText = await getRows(index);
+        const subTable = document.createElement('table');
+        subTable.innerHTML = subTableText;
+        subTable.classList.add('inner-table'); // Add a class for styling the inner table
+        subTableContainer.appendChild(subTable);
+        subTableRow.appendChild(subTableContainer);
+        tableBody.appendChild(subTableRow);
+    }
 }
-function onDeleteChallenge(index) {
+
+const createUserTableRows = async () => {
+    const userTableBody = document.getElementById('user-list'); // Replace with your actual user table body ID
+    const users = await getUsers(); // Replace with your function to fetch users
+    listUsers = users;
+
+
+    console.log('listUsers',listUsers);
+    if(!users.length){
+        return '';
+    }
+
+    // Clear existing rows in the user table
+    userTableBody.innerHTML = '';
+
+    // Create new rows for users
+    for (const [index, user] of users.entries()) {
+        const userRow = document.createElement('tr');
+        const nameCell = document.createElement('td');
+        nameCell.textContent = user.name; // Replace with the actual property of the user object
+        userRow.appendChild(nameCell);
+
+        const userActionsCell = document.createElement('td');
+        userActionsCell.innerHTML = `
+        <button class="btn btn-delete" onclick="onDeleteUser(${index})">Delete User</button>
+    `;
+        userRow.appendChild(userActionsCell);
+
+        userTableBody.appendChild(userRow);
+    }
+
+// Function to toggle the visibility of the sub-table
+
+}
+
+const toggleAnswers = (index) => {
+    const subTable = document.getElementById(`sub-table-${index}`);
+    subTable.style.display = subTable.style.display === 'none' ? 'block' : 'none';
+    list[index].show_answers = subTable.style.display === 'block';
+    updateChallenge(list[index].id, list[index]).then(r => {
+    }, err => {
+        console.log('could not update');
+    })
+
+};
+const getRows = async (index) => {
+    const showAnswers = list[index].show_answers;
+    let table = '';
+    let answersRows = '';
+    if (showAnswers) {
+        let answersRows = '';
+        let answersData = await getAnswersForChallenge(list[index].id, 1000);
+        // Populate table rows with answers data
+        if (answersData.length) {
+            console.log('answersData', answersData);
+
+            return answersData.map(answer => {
+                const isCorrect = answer.selectedText === answer.correct_answer;
+                const result = isCorrect ? 'Correct' : 'Wrong';
+
+                return `
+                    <tr>
+                        <td>${answer.user}</td>
+                        <td>${answer.question}</td>
+                        <td>${answer.selectedIndex}</td>
+                        <td>${result}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+    }
+    return answersRows;
+};
+
+
+async function onDeleteChallenge(index) {
     let challenge = list[index];
     list.splice(index, 1);
-    createTableRows(list);
+    await createTableRows(list);
+
+    const questionsList = await getQuestionsForChallenge(challenge.id, 1000);
+    questionsList.forEach(item => {
+        deleteQuestion(item).then();
+    })
     deleteChallenge(challenge.id, challenge).then(() => {
+
     }, err => {
         console.log('could not delete');
     })
 }
 
 
-
+function onDeleteUser(index){
+    deleteUser(listUsers[index].id).then( async res => {
+        await createUserTableRows();
+    });
+}
 
 function stopChallenge(index, row) {
     let challenge = list[index];
     challenge.stopped = true;
     updateChallenge(challenge.id, challenge).then(r => {
-        row.classList.add('stopped');
+        updateTable();
     }, err => {
         console.log('could not update');
     })
@@ -76,7 +198,7 @@ function showResults(index, row) {
     let challenge = list[index];
     challenge.show_results = true;
     updateChallenge(challenge.id, challenge).then(r => {
-        row.classList.add('show-results');
+        updateTable();
     }, err => {
         console.log('could not update');
     })
@@ -118,7 +240,8 @@ export function startChallenge() {
     // Create a data object for the challenge
     const challengeData = {
         title: title,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        show_answers: true
     };
 
     addDoc(challengesCollection, challengeData)
@@ -133,7 +256,6 @@ export function startChallenge() {
 
     // Add any additional logic you want to perform after creating the challenge
 }
-
 function setChallengeText() {
     const initialQuestions = [
         {
@@ -277,7 +399,20 @@ function setChallengeText() {
     textarea.value = JSON.stringify(initialQuestions, null, 2);
 }
 
+function refreshTable() {
+    updateTable();
+}
+
+async function refreshUserTable() {
+    await createUserTableRows();
+}
+
+
 window.startChallenge = startChallenge;
 window.stopChallenge = stopChallenge;
 window.showResults = showResults;
 window.onDeleteChallenge = onDeleteChallenge;
+window.toggleAnswers = toggleAnswers;
+window.refreshTable = refreshTable;
+window.refreshUserTable = refreshUserTable;
+window.onDeleteUser = onDeleteUser;

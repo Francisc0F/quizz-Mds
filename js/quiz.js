@@ -1,17 +1,7 @@
-import {answersCollection, getUser, getChallenges} from "./index.js";
+import {answersCollection, getUser} from "./index.js";
 import {
-    getFirestore,
-    collection,
-    getDocs,
-    addDoc,
-    where,
-    orderBy,
-    query,
-    limit,
-    onSnapshot
+    addDoc
 } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
-
-
 
 
 window.onload = () => {
@@ -91,20 +81,26 @@ window.onload = () => {
     async function checkAnswer(index) {
         let question = questions[index];
         let checkedAnswerElem = document.querySelector(".answer.checked .answer-text");
-
-        await addDoc(answersCollection, {
-            question: question.question,
-            user: getUser(),
-            selectedIndex: checkedAnswerElem.dataset.index,
-            correct_answer: question.correct_answer,
-            new_challenge_key: question.new_challenge_key
-        })
-            .then((docRef) => {
-                console.log("Answer submitted successfully with ID: ", docRef.id);
-            })
-            .catch((error) => {
-                console.error("Error adding challenge: ", error);
-            });
+        const answerText = checkedAnswerElem.textContent;
+        if(question.question){
+            const answer = {
+                question: question.question,
+                user: getUser(),
+                timestamp: new Date().toISOString(),
+                selectedIndex: checkedAnswerElem.dataset.index,
+                selectedText: answerText,
+                correct_answer: question.correct_answer,
+                new_challenge_key: question.new_challenge_key
+            };
+            console.log('answer', answer);
+            await addDoc(answersCollection, answer)
+                .then((docRef) => {
+                    console.log("Answer submitted successfully with ID: ", docRef.id);
+                })
+                .catch((error) => {
+                    console.error("Error adding challenge: ", error);
+                });
+        }
 
         if (checkedAnswerElem) {
             let dataIndex = checkedAnswerElem.dataset.index;

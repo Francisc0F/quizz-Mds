@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="./../css/index.css" />
     <script src="../js/admin.js" type="module" defer></script>
   </head>
-  <body class="w-100">
+  <body >
   <div class="d-flex justify-content-start w-100">
     <form id="challengeForm" >
       <label for="title">Title:</label>
@@ -23,6 +23,7 @@
     </form>
     <div style="background: lightcyan;" class="w-100">
       <h2>Challenge List</h2>
+      <button class="btn" onclick="refreshTable()">Refresh</button>
       <table id="challenge-list">
         <thead>
         <tr>
@@ -37,5 +38,25 @@
       </table>
     </div>
   </div>
+<div>
+  <div style="background: lightgreen;" >
+    <h2>User List</h2>
+    <button class="btn" onclick="refreshUserTable()">Refresh</button>
+    <table id="user-list">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <!-- Populate this section with user data dynamically -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
   </body>
 </html>

@@ -5,6 +5,7 @@ import {
     getDocs,
     updateDoc,
     deleteDoc,
+    addDoc,
     doc,
     where,
     orderBy,
@@ -34,12 +35,34 @@ const db = getFirestore();
 
 // Access the 'questions' collection
 export const questionsCollection = collection(db, 'questions');
+export const usersCollection = collection(db, 'users');
 
 export const challengesCollection = collection(db, 'challenges');
 export const answersCollection = collection(db, 'answers');
 
-export function getUser(){
+export function getUser() {
     return localStorage.getItem("user");
+}
+
+export function addUser(name) {
+    addDoc(usersCollection, {
+        name: name, timestamp: new Date().toISOString(),
+    })
+        .then((docRef) => {
+            console.log("addUser submitted successfully with ID: ", docRef.id);
+        })
+        .catch((error) => {
+            console.error("Error adding addUser: ", error);
+        });
+}
+
+
+export function getCurrentChallenge() {
+    return JSON.parse(localStorage.getItem("challenge"));
+}
+
+export function setCurrentChallenge(challenge) {
+    return localStorage.setItem("challenge", JSON.stringify(challenge));
 }
 
 export const getChallenges = (size) => {
@@ -49,7 +72,25 @@ export const getChallenges = (size) => {
         const unsubscribe = onSnapshot(orderedChallenges, (querySnapshot) => {
             const challengesList = [];
             querySnapshot.forEach((doc) => {
-                challengesList.push({ id: doc.id, ...doc.data() });
+                challengesList.push({id: doc.id, ...doc.data()});
+            });
+            resolve(challengesList);
+        }, (error) => {
+            reject(error);
+        });
+
+        // If you want to unsubscribe from the snapshot listener, you can use the returned function
+        // e.g., unsubscribe();
+    });
+}
+export const getChallengeById = (id) => {
+    return new Promise((resolve, reject) => {
+        const orderedChallenges = query(challengesCollection, limit(1),where('id', '==', id));
+
+        const unsubscribe = onSnapshot(orderedChallenges, (querySnapshot) => {
+            const challengesList = [];
+            querySnapshot.forEach((doc) => {
+                challengesList.push({id: doc.id, ...doc.data()});
             });
             resolve(challengesList);
         }, (error) => {
@@ -61,6 +102,108 @@ export const getChallenges = (size) => {
     });
 }
 
+export const getQuestionsForChallenge = (challengeId, size) => {
+    return new Promise((resolve, reject) => {
+        // Assuming you have a collection named 'questionsCollection' where questions are stored
+        const orderedQuestions = query(questionsCollection, where('new_challenge_key', '==', challengeId), limit(size), orderBy('timestamp', 'desc'));
+
+        const unsubscribe = onSnapshot(orderedQuestions, (querySnapshot) => {
+            const questionsList = [];
+            querySnapshot.forEach((doc) => {
+                questionsList.push({id: doc.id, ...doc.data()});
+            });
+            resolve(questionsList);
+        }, (error) => {
+            reject(error);
+        });
+
+        // If you want to unsubscribe from the snapshot listener, you can use the returned function
+        // e.g., unsubscribe();
+    });
+}
+
+
+export const getAnswersForChallenge = (challengeId, size) => {
+    return new Promise((resolve, reject) => {
+        // Assuming you have a collection named 'answersCollection' where answers are stored
+        const orderedAnswers = query(answersCollection, where('new_challenge_key', '==', challengeId), limit(size), orderBy('timestamp', 'desc'));
+
+        const unsubscribe = onSnapshot(orderedAnswers, (querySnapshot) => {
+            const answersList = [];
+            querySnapshot.forEach((doc) => {
+                answersList.push({id: doc.id, ...doc.data()});
+            });
+            resolve(answersList);
+        }, (error) => {
+            reject(error);
+        });
+
+        // If you want to unsubscribe from the snapshot listener, you can use the returned function
+        // e.g., unsubscribe();
+    });
+}
+
+export const getFromUserAnswersForChallenge = (challengeId, size, userName) => {
+    return new Promise((resolve, reject) => {
+        // Assuming you have a collection named 'answersCollection' where answers are stored
+        const orderedAnswers = query(answersCollection,
+            where('new_challenge_key', '==', challengeId),
+            where('user', '==', userName),
+            limit(size), orderBy('timestamp', 'desc'));
+
+        const unsubscribe = onSnapshot(orderedAnswers, (querySnapshot) => {
+            const answersList = [];
+            querySnapshot.forEach((doc) => {
+                answersList.push({id: doc.id, ...doc.data()});
+            });
+            resolve(answersList);
+        }, (error) => {
+            reject(error);
+        });
+        // If you want to unsubscribe from the snapshot listener, you can use the returned function
+        // e.g., unsubscribe();
+    });
+}
+
+
+export const getUsersByName = (name) => {
+    return new Promise((resolve, reject) => {
+        // Assuming you have a collection named 'questionsCollection' where questions are stored
+        const orderedQuestions = query(usersCollection, where('name', '==', name), limit(200), orderBy('timestamp', 'desc'));
+
+        const unsubscribe = onSnapshot(orderedQuestions, (querySnapshot) => {
+            const questionsList = [];
+            querySnapshot.forEach((doc) => {
+                questionsList.push({id: doc.id, ...doc.data()});
+            });
+            resolve(questionsList);
+        }, (error) => {
+            reject(error);
+        });
+
+        // If you want to unsubscribe from the snapshot listener, you can use the returned function
+        // e.g., unsubscribe();
+    });
+}
+export const getUsers = () => {
+    return new Promise((resolve, reject) => {
+        // Assuming you have a collection named 'questionsCollection' where questions are stored
+        const orderedQuestions = query(usersCollection, limit(200));
+
+        const unsubscribe = onSnapshot(orderedQuestions, (querySnapshot) => {
+            const users = [];
+            querySnapshot.forEach((doc) => {
+                users.push({id: doc.id, ...doc.data()});
+            });
+            resolve(users);
+        }, (error) => {
+            reject(error);
+        });
+
+        // If you want to unsubscribe from the snapshot listener, you can use the returned function
+        // e.g., unsubscribe();
+    });
+}
 
 export const updateChallenge = (challengeId, updatedData) => {
 
@@ -93,6 +236,37 @@ export const deleteChallenge = (challengeId) => {
     });
 };
 
+
+export const deleteUser = (id) => {
+    return new Promise((resolve, reject) => {
+        const challengeRef = doc(usersCollection, id);
+
+        // Use deleteDoc method to delete the challenge
+        deleteDoc(challengeRef)
+            .then(() => {
+                resolve("User deleted successfully");
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+};
+
+export const deleteQuestion = (id) => {
+    return new Promise((resolve, reject) => {
+        const questRef = doc(questionsCollection, id);
+
+        // Use deleteDoc method to delete the challenge
+        deleteDoc(questRef)
+            .then(() => {
+                resolve("Challenge deleted successfully");
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+};
+
 const fetchChallenges = () => {
     const orderedChallenges = query(challengesCollection, limit(1), orderBy('timestamp', 'desc'));
 
@@ -115,7 +289,7 @@ const renderChallengeButton = (title, id) => {
     buttonElement.addEventListener('click', () => {
         var userInput = newUserInputBox.value;
         localStorage.setItem("user", userInput);
-
+        setCurrentChallenge({title, id});
         getQuestions(id).then(() => {
             quizzLink();
         });
@@ -156,26 +330,6 @@ let newUserInputBox = document.getElementById("nickname");
 
 let admin = false;
 
-function start() {
-    var userInput = newUserInputBox.value;
-
-    if (!userInput) {
-        alert("Nickname is required.");
-    } else {
-        // Check if the user is an admin
-        if (isAdmin(userInput)) {
-            // If user is an admin, navigate to admin.html
-            admin = true;
-            window.location.href = './html/admin.html';
-        } else {
-            // If not admin, store user in localStorage and navigate to quizzLink
-            localStorage.setItem("user", userInput);
-            quizzLink();
-        }
-    }
-}
-
-// Function to check if the user is an admin
 function isAdmin(username) {
     // Replace this with your logic to determine admin status
     // For example, you might have an array of admin usernames
@@ -184,8 +338,9 @@ function isAdmin(username) {
 }
 
 
-function onClickEnter() {
+async function onClickEnter() {
     var userInput = newUserInputBox.value;
+
 
     if (!userInput) {
         alert("Nickname is required.");
@@ -197,6 +352,18 @@ function onClickEnter() {
         admin = true;
         window.location.href = './html/admin.html';
     }
+
+
+    const users = await getUsersByName(userInput);
+    // Check if the user is already in the database
+    const userExists = users.some(user => user.name === userInput);
+
+    if (userExists) {
+        alert("User already exists in the database.");
+        return;
+    }
+
+    addUser(userInput)
 
     document.getElementById('challenge-container').classList.add('display-none');
     document.getElementById('awaiting-text').classList.add('display-block');

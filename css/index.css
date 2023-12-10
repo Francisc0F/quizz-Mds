@@ -31,9 +31,6 @@ body {
     font-family: "Prompt", sans-serif;
     overflow-x: hidden;
     background-size: cover;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 body::after {
@@ -213,6 +210,10 @@ a {
     width: 100%;
 }
 
+.title {
+    margin-right: 10px; /* Adjust the margin as needed */
+}
+
 
 td.stopped .btn-stop {
     display: none;
@@ -220,6 +221,32 @@ td.stopped .btn-stop {
 
 td.show-results .btn-results {
     display: none;
+}
+
+
+#challenge-list th, #challenge-list td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+#challenge-list th {
+    background-color: #f2f2f2;
+    /* Add more styling for header cells if necessary */
+}
+
+
+.inner-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    /* Add more styling as needed */
+}
+
+.inner-table th, .inner-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
 }
 
 .btn-stop {
