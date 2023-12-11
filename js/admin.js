@@ -27,7 +27,6 @@ let listUsers = [];
 function updateTable() {
     getChallenges(20).then(async challenges => {
         list = challenges;
-        console.log('challenges', challenges);
         await createTableRows(challenges)
     });
 }
@@ -185,7 +184,6 @@ const getRows = async (index) => {
 
     let answersData = await getAnswersForChallenge(list[index].id, 1000);
     const stats = calculateQuestionStats(answersData)
-    console.log(stats, 'stats');
 
     statsHtml = getHtmlForStats(stats);
 
@@ -193,7 +191,6 @@ const getRows = async (index) => {
     if (showAnswers) {
         // Populate table rows with answers data
         if (answersData.length) {
-            console.log('answersData', answersData);
 
             answersRows = answersData.map(answer => {
                 const isCorrect = answer.selectedText === answer.correct_answer;
@@ -226,7 +223,6 @@ async function onDeleteChallenge(index) {
     deleteChallenge(challenge.id, challenge).then(() => {
 
     }, err => {
-        console.log('could not delete');
     })
 }
 
@@ -262,26 +258,25 @@ function addQuestionToChallenge(title, id) {
 
     var challengeText = document.getElementById('challengeText').value;
     // Parse the JSON string into an array of questions
-    console.log('challengeText', challengeText);
     var questionsArray = JSON.parse(challengeText);
 
     // Loop through the array and push each question to the "questions" node
     questionsArray.forEach(function (question) {
-        addDoc(questionsCollection, {
-            question: question.question,
-            answer_1: question.answer_1,
-            answer_2: question.answer_2,
-            answer_3: question.answer_3,
-            answer_4: question.answer_4,
-            correct_answer: question.correct_answer,
-            new_challenge_key: id
-        })
-            .then((docRef) => {
-                console.log("Question submitted successfully with ID: ", docRef.id);
+        try {
+            addDoc(questionsCollection, {
+                question: question.question,
+                answer_1: question.answer_1,
+                answer_2: question.answer_2,
+                answer_3: question.answer_3,
+                answer_4: question.answer_4,
+                correct_answer: question.correct_answer,
+                new_challenge_key: id
             })
-            .catch((error) => {
-                console.error("Error adding challenge: ", error);
-            });
+        }catch (E){
+            alert("not possible to add challenge");
+            return;
+        }
+
     });
 }
 
@@ -310,7 +305,7 @@ export async function startChallenge() {
             refreshTable();
         })
         .catch((error) => {
-            console.error("Error adding challenge: ", error);
+            alert("Wrong format");
         });
     // Create a reference to the "challenges" node in the database
 
