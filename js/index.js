@@ -79,8 +79,6 @@ export const getChallenges = (size) => {
             reject(error);
         });
 
-        // If you want to unsubscribe from the snapshot listener, you can use the returned function
-        // e.g., unsubscribe();
     });
 }
 export const getChallengeById = (id) => {

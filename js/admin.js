@@ -64,7 +64,6 @@ const createTableRows = async (challenges) => {
                 <span class="title">${challenge.title}</span>
                 <span>${formattedTimestamp}</span>
                 <div class="d-flex">
-                    ${!challenge.stopped ? `<button class="btn btn-stop" onclick="stopChallenge(${index}, this.parentNode.parentNode)">Stop Challenge</button>` : ''}
                     ${!challenge.show_results ? `<button class="btn btn-results" onclick="showResults(${index}, this.parentNode.parentNode)">Show Results</button>` : ''}
                     <button class="btn btn-delete" onclick="onDeleteChallenge(${index})">Delete Challenge</button>
                 </div>
@@ -93,8 +92,7 @@ const createUserTableRows = async () => {
     listUsers = users;
 
 
-    console.log('listUsers',listUsers);
-    if(!users.length){
+    if (!users.length) {
         return '';
     }
 
@@ -131,18 +129,73 @@ const toggleAnswers = (index) => {
     })
 
 };
-const getRows = async (index) => {
-    const showAnswers = list[index].show_answers;
-    let table = '';
+
+function calculateQuestionStats(answers) {
+    const questionStats = {};
+
+    for (const answer of answers) {
+        const questionName = answer.question;
+        const isCorrect = answer.selectedText === answer.correct_answer;
+
+        if (!questionStats[questionName]) {
+            questionStats[questionName] = {
+                correct: 0,
+                wrong: 0,
+            };
+        }
+
+        if (isCorrect) {
+            questionStats[questionName].correct++;
+        } else {
+            questionStats[questionName].wrong++;
+        }
+    }
+
+    return questionStats;
+}
+
+
+function getHtmlForStats(stats) {
     let answersRows = '';
+    // Add statistics rows for each question
+    for (const questionName in stats) {
+        const questionStats = stats[questionName];
+
+        answersRows += `
+                <tr class="stats-row">
+                    <td colspan="4" style="background-color: #f2f2f2;"><strong>${questionName}</strong></td>
+                </tr>
+                <tr class="stats-data-row">
+                    <td >Total Correct:</td>
+                    <td>${questionStats.correct}</td>
+                    <td >Total Wrong:</td>
+                    <td>${questionStats.wrong}</td>
+                </tr>
+            `;
+    }
+    return answersRows;
+}
+
+const getRows = async (index) => {
+    const showAnswers = false //list[index].show_answers;
+
+    let answersRows = '';
+    let statsHtml = '';
+
+
+    let answersData = await getAnswersForChallenge(list[index].id, 1000);
+    const stats = calculateQuestionStats(answersData)
+    console.log(stats, 'stats');
+
+    statsHtml = getHtmlForStats(stats);
+
+
     if (showAnswers) {
-        let answersRows = '';
-        let answersData = await getAnswersForChallenge(list[index].id, 1000);
         // Populate table rows with answers data
         if (answersData.length) {
             console.log('answersData', answersData);
 
-            return answersData.map(answer => {
+            answersRows = answersData.map(answer => {
                 const isCorrect = answer.selectedText === answer.correct_answer;
                 const result = isCorrect ? 'Correct' : 'Wrong';
 
@@ -157,7 +210,7 @@ const getRows = async (index) => {
             }).join('');
         }
     }
-    return answersRows;
+    return statsHtml + answersRows;
 };
 
 
@@ -178,8 +231,8 @@ async function onDeleteChallenge(index) {
 }
 
 
-function onDeleteUser(index){
-    deleteUser(listUsers[index].id).then( async res => {
+function onDeleteUser(index) {
+    deleteUser(listUsers[index].id).then(async res => {
         await createUserTableRows();
     });
 }
@@ -232,11 +285,16 @@ function addQuestionToChallenge(title, id) {
     });
 }
 
-export function startChallenge() {
+export async function startChallenge() {
     // Get values from the form
     var title = document.getElementById('title').value;
+    const challenges = await getChallenges(100);
+    // Check if there is a challenge with the title "x"
+    const hasTitleX = challenges.some(challenge => challenge.title === title);
 
-
+    if (hasTitleX) {
+        alert(`The the challenge already exists called` + title);
+    }
     // Create a data object for the challenge
     const challengeData = {
         title: title,
@@ -248,6 +306,7 @@ export function startChallenge() {
         .then((docRef) => {
             console.log("Challenge submitted successfully with ID: ", docRef.id);
             addQuestionToChallenge(title, docRef.id);
+            refreshTable();
         })
         .catch((error) => {
             console.error("Error adding challenge: ", error);
@@ -256,6 +315,7 @@ export function startChallenge() {
 
     // Add any additional logic you want to perform after creating the challenge
 }
+
 function setChallengeText() {
     const initialQuestions = [
         {
