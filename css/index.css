@@ -206,6 +206,18 @@ a {
     justify-content: flex-start;
 }
 
+
+.stats-row {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    text-align: start;
+}
+
+.stats-data-row {
+    background-color: #f9f9f9;
+}
+
+
 .w-100 {
     width: 100%;
 }
@@ -227,7 +239,7 @@ td.show-results .btn-results {
 #challenge-list th, #challenge-list td {
     border: 1px solid #ddd;
     padding: 10px;
-    text-align: center;
+    text-align: start;
 }
 
 #challenge-list th {
