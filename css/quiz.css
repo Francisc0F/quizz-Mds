@@ -107,7 +107,10 @@ body {
 }
 
 .quiz-app .question-control .next {
-  font-size: 1.6rem;
+  position: relative;
+  top: 35%;
+  left: 60%;
+  font-size: 3rem;
   justify-self: flex-end;
   align-self: flex-start;
   text-transform: uppercase;
