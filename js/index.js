@@ -320,7 +320,6 @@ const getQuestions = async (challengeId) => {
     });
     // Save data
     localStorage.setItem('questions', JSON.stringify(questions));
-    console.log(questions);
 };
 
 
@@ -362,15 +361,10 @@ async function onClickEnter() {
     }
 
     addUser(userInput)
-
+    fetchChallenges();
     document.getElementById('challenge-container').classList.add('display-none');
     document.getElementById('awaiting-text').classList.add('display-block');
-
     const intervalId = setInterval(fetchChallenges, 3000);
-}
-
-function scoreboardlink() {
-    window.location.href = "./html/scorboard.html";
 }
 
 function quizzLink() {
@@ -379,4 +373,3 @@ function quizzLink() {
 
 
 window.onClickEnter = onClickEnter;
-window.scoreboardlink = scoreboardlink;
