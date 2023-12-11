@@ -294,6 +294,7 @@ export async function startChallenge() {
 
     if (hasTitleX) {
         alert(`The the challenge already exists called` + title);
+        return;
     }
     // Create a data object for the challenge
     const challengeData = {
