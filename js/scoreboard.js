@@ -48,7 +48,13 @@ async function loadTable() {
     }
 }
 
+function showButton() {
+    var button = document.getElementById('myButton');
+    button.style.display = 'block';
+  }
+
 function displayTable(data, show_answers) {
+    showButton();
     // Get the element where you want to append the table
     var tableContainer = document.getElementById('table-container');
     tableContainer.innerHTML = '';

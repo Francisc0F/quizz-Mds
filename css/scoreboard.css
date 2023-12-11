@@ -13,6 +13,11 @@
   --medium-purple: #55279b;
   --blue: #401088;
 }
+
+#myButton{
+  display: none;
+}
+
 #table-container {
   margin-top: 20px;
   font-family: Arial, sans-serif;
