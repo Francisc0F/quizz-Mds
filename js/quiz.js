@@ -92,7 +92,6 @@ window.onload = () => {
                 correct_answer: question.correct_answer,
                 new_challenge_key: question.new_challenge_key
             };
-            console.log('answer', answer);
             await addDoc(answersCollection, answer)
                 .then((docRef) => {
                     console.log("Answer submitted successfully with ID: ", docRef.id);

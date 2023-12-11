@@ -320,7 +320,6 @@ const getQuestions = async (challengeId) => {
     });
     // Save data
     localStorage.setItem('questions', JSON.stringify(questions));
-    console.log(questions);
 };
 
 

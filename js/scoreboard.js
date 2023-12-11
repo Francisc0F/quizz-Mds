@@ -15,11 +15,6 @@ async function loadTable() {
 
     if (current?.id) {
         const challenge = (await getChallengeById(current?.id))[0];
-        if (challenge) {
-            console.log('challenge', challenge);
-            console.log('stopped', challenge.stopped);
-            console.log('show_answers', challenge.show_answers);
-        }
 
         getFromUserAnswersForChallenge(current.id, 300, user).then(answers => {
             console.log('answers', answers);
