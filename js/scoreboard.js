@@ -54,7 +54,9 @@ function showButton() {
   }
 
 function displayTable(data, show_answers) {
-    showButton();
+    if(show_answers==true){
+        showButton();
+    }
     // Get the element where you want to append the table
     var tableContainer = document.getElementById('table-container');
     tableContainer.innerHTML = '';
